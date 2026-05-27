@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guida alla Classificazione degli Aeromobili</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky: #0a1628;
+    --sky-mid: #0e2240;
+    --sky-light: #1a3a6e;
+    --accent-orange: #f4703b;
+    --accent-teal: #2ecad4;
+    --accent-gold: #f0c040;
+    --accent-green: #3dd68c;
+    --text-bright: #f0f4ff;
+    --text-muted: #8aa0c8;
+    --card-bg: rgba(255,255,255,0.04);
+    --card-border: rgba(255,255,255,0.09);
+    --modal-bg: #071020;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--sky);
+    color: var(--text-bright);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ---- BACKGROUND ---- */
+  .bg-stars {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(46,202,212,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 80% 90%, rgba(244,112,59,0.07) 0%, transparent 60%),
+      var(--sky);
+  }
+  .bg-stars::before {
+    content:''; position:absolute; inset:0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.55) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.18;
+    animation: starDrift 90s linear infinite;
+  }
+  @keyframes starDrift { from{transform:translateY(0)} to{transform:translateY(-60px)} }
+
+  /* ---- HEADER ---- */
+  header {
+    position: relative; z-index: 10;
+    text-align: center;
+    padding: 72px 24px 48px;
+  }
+  .header-label {
+    display: inline-block;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--accent-teal);
+    border: 1px solid rgba(46,202,212,0.35);
+    padding: 6px 18px; border-radius: 100px;
+    margin-bottom: 20px;
+    opacity: 0; animation: fadeUp 0.7s 0.1s ease forwards;
+  }
+  h1 {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: clamp(2rem, 5vw, 3.6rem);
+    line-height: 1.1;
+    background: linear-gradient(135deg, #f0f4ff 30%, var(--accent-teal) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    opacity: 0; animation: fadeUp 0.7s 0.2s ease forwards;
+  }
+  .header-sub {
+    margin-top: 14px; color: var(--text-muted); font-size: 1.05rem; font-weight: 300;
+    max-width: 600px; margin-left: auto; margin-right: auto;
+    opacity: 0; animation: fadeUp 0.7s 0.35s ease forwards;
+  }
+  .divider-line {
+    width: 60px; height: 3px; border-radius: 2px;
+    background: linear-gradient(90deg, var(--accent-teal), var(--accent-orange));
+    margin: 28px auto 0;
+    opacity: 0; animation: fadeUp 0.7s 0.45s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform: translateY(22px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+
+  /* ---- MAIN SPLIT ---- */
+  .main-split {
+    position: relative; z-index: 5;
+    display: flex; gap: 0;
+    max-width: 1300px; margin: 0 auto; padding: 0 24px 48px;
+  }
+  .split-col {
+    flex: 1;
+    padding: 0 20px;
+  }
+  .split-divider {
+    width: 2px;
+    background: linear-gradient(to bottom, transparent, rgba(46,202,212,0.4), rgba(244,112,59,0.4), transparent);
+    flex-shrink: 0; position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .split-divider::after {
+    content: '⟷';
+    position: absolute;
+    color: var(--text-muted); font-size: 18px;
+    background: var(--sky); padding: 8px 0;
+    writing-mode: horizontal-tb;
+  }
+
+  .col-title {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: clamp(1.3rem, 2.5vw, 1.9rem);
+    text-align: center; margin-bottom: 6px;
+  }
+  .col-subtitle {
+    text-align: center; font-size: 0.8rem; font-weight: 300;
+    color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .col-principle {
+    text-align: center;
+    font-size: 0.82rem; color: var(--text-muted);
+    margin-bottom: 28px; font-style: italic;
+  }
+  .col-principle strong { color: var(--accent-gold); font-style: normal; }
+
+  /* ---- CARDS ---- */
+  .card-grid {
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 20px 22px;
+    cursor: pointer;
+    position: relative; overflow: hidden;
+    transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+    opacity: 0; transform: translateY(28px);
+  }
+  .card.visible {
+    opacity: 1; transform: translateY(0);
+    transition: opacity 0.55s ease, transform 0.55s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+  }
+  .card::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+  }
+  .card[data-color="teal"]:hover { border-color: var(--accent-teal); box-shadow: 0 16px 40px rgba(46,202,212,0.15); }
+  .card[data-color="orange"]:hover { border-color: var(--accent-orange); box-shadow: 0 16px 40px rgba(244,112,59,0.15); }
+  .card[data-color="gold"]:hover { border-color: var(--accent-gold); box-shadow: 0 16px 40px rgba(240,192,64,0.15); }
+  .card[data-color="green"]:hover { border-color: var(--accent-green); box-shadow: 0 16px 40px rgba(61,214,140,0.15); }
+
+  .card-header { display: flex; align-items: center; gap: 14px; }
+  .card-icon {
+    width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .card[data-color="teal"] .card-icon { background: rgba(46,202,212,0.15); }
+  .card[data-color="orange"] .card-icon { background: rgba(244,112,59,0.15); }
+  .card[data-color="gold"] .card-icon { background: rgba(240,192,64,0.15); }
+  .card[data-color="green"] .card-icon { background: rgba(61,214,140,0.15); }
+
+  .card-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.05rem; }
+  .card-desc { margin-top: 10px; font-size: 0.88rem; color: var(--text-muted); line-height: 1.55; }
+  .card-arrow {
+    position: absolute; right: 18px; top: 50%; transform: translateY(-50%);
+    font-size: 18px; color: var(--text-muted); transition: transform 0.2s, color 0.2s;
+  }
+  .card:hover .card-arrow { transform: translateY(-50%) translateX(4px); color: var(--text-bright); }
+
+  /* ---- SUMMARY TABLE ---- */
+  .table-section {
+    position: relative; z-index: 5;
+    max-width: 1300px; margin: 0 auto 80px; padding: 0 24px;
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .table-section.visible { opacity: 1; transform: translateY(0); }
+  .section-title {
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: 1.1rem; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 18px; text-align: center;
+  }
+  .summary-table {
+    width: 100%; border-collapse: separate; border-spacing: 0;
+    border-radius: 16px; overflow: hidden;
+    border: 1px solid var(--card-border);
+  }
+  .summary-table th {
+    background: rgba(255,255,255,0.06);
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.78rem;
+    letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted);
+    padding: 14px 20px; text-align: left;
+  }
+  .summary-table td {
+    padding: 13px 20px; font-size: 0.9rem;
+    border-top: 1px solid var(--card-border);
+    vertical-align: middle;
+  }
+  .summary-table tr:hover td { background: rgba(255,255,255,0.03); }
+  .badge {
+    display: inline-block; padding: 3px 10px; border-radius: 100px;
+    font-size: 0.75rem; font-weight: 600;
+  }
+  .badge-aero { background: rgba(46,202,212,0.18); color: var(--accent-teal); }
+  .badge-dyn  { background: rgba(244,112,59,0.18); color: var(--accent-orange); }
+
+  /* ---- MODAL ---- */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(4, 10, 22, 0.88);
+    backdrop-filter: blur(10px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: var(--modal-bg);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    max-width: 780px; width: 100%;
+    max-height: 90vh; overflow-y: auto;
+    padding: 0;
+    transform: scale(0.94) translateY(20px);
+    transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent;
+  }
+  .modal-overlay.open .modal { transform: scale(1) translateY(0); }
+
+  .modal-top {
+    position: sticky; top: 0;
+    background: linear-gradient(to bottom, var(--modal-bg) 80%, transparent);
+    padding: 28px 32px 16px;
+    z-index: 5;
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  }
+  .modal-top-left { flex: 1; }
+  .modal-tag {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .modal-title {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: clamp(1.4rem, 3vw, 2rem); line-height: 1.1;
+  }
+  .modal-close {
+    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+    color: var(--text-bright); border-radius: 10px;
+    width: 38px; height: 38px; cursor: pointer; font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s; flex-shrink: 0;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.14); }
+
+  .modal-body { padding: 8px 32px 36px; }
+
+  .modal-section { margin-bottom: 32px; }
+  .modal-section-title {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.75rem;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    margin-bottom: 14px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--card-border);
+  }
+  .modal-text { font-size: 0.93rem; line-height: 1.7; color: #c8d8f0; }
+  .modal-text + .modal-text { margin-top: 10px; }
+
+  .formula-box {
+    background: rgba(46,202,212,0.07);
+    border: 1px solid rgba(46,202,212,0.2);
+    border-radius: 12px; padding: 16px 20px;
+    margin: 14px 0; font-size: 0.9rem;
+    font-family: 'Courier New', monospace;
+    line-height: 1.8;
+  }
+  .formula-box .formula-main {
+    font-size: 1.2rem; font-weight: 700; color: var(--accent-teal);
+    text-align: center; margin-bottom: 10px;
+  }
+  .formula-box .formula-vars { color: var(--text-muted); font-size: 0.82rem; }
+
+  .example-box {
+    background: rgba(61,214,140,0.06);
+    border-left: 3px solid var(--accent-green);
+    border-radius: 0 10px 10px 0; padding: 14px 18px;
+    margin: 14px 0;
+  }
+  .example-box strong { color: var(--accent-green); display: block; margin-bottom: 4px; font-size: 0.8rem; letter-spacing: 1.5px; text-transform: uppercase; }
+  .example-box p { font-size: 0.9rem; color: #b8d0e8; line-height: 1.6; }
+
+  .info-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0;
+  }
+  .info-cell {
+    background: rgba(255,255,255,0.04); border-radius: 10px; padding: 12px 14px;
+  }
+  .info-cell .label { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 4px; }
+  .info-cell .value { font-size: 0.93rem; font-weight: 500; }
+
+  /* SVG diagrams */
+  .svg-wrap {
+    margin: 20px 0; border-radius: 14px; overflow: hidden;
+    background: rgba(255,255,255,0.03); border: 1px solid var(--card-border);
+    padding: 20px;
+  }
+  .svg-wrap svg { width: 100%; height: auto; display: block; }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 768px) {
+    .main-split { flex-direction: column; }
+    .split-divider { width: 100%; height: 2px; margin: 12px 0; }
+    .split-divider::after { writing-mode: horizontal-tb; }
+    .info-grid { grid-template-columns: 1fr; }
+    .modal-body { padding: 8px 20px 28px; }
+    .modal-top { padding: 22px 20px 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="bg-stars"></div>
+
+<header>
+  <div class="header-label">Aeronautica</div>
+  <h1>Classificazione degli Aeromobili</h1>
+  <p class="header-sub">Come volano le macchine — dalla statica dei gas alla dinamica di Newton. Clicca su ogni categoria per l'approfondimento completo.</p>
+  <div class="divider-line"></div>
+</header>
+
+<!-- MAIN TWO COLUMNS -->
+<div class="main-split">
+  <!-- LEFT: AEROSTATI -->
+  <div class="split-col">
+    <div class="col-title" style="color: var(--accent-teal)">AEROSTATI</div>
+    <div class="col-subtitle">Sostentazione Statica</div>
+    <div class="col-principle">Principio di <strong>Archimede</strong> — La spinta idrostatica nei fluidi gassosi</div>
+    <div class="card-grid">
+
+      <div class="card" data-color="teal" data-modal="archimede">
+        <div class="card-header">
+          <div class="card-icon">⚖️</div>
+          <div>
+            <div class="card-title">Principio di Archimede</div>
+          </div>
+        </div>
+        <div class="card-desc">Fondamento fisico della sostentazione statica: spinta idrostatica, densità, forze di galleggiamento nei fluidi gassosi.</div>
+        <span class="card-arrow">→</span>
+      </div>
+
+      <div class="card" data-color="teal" data-modal="mongolfiere">
+        <div class="card-header">
+          <div class="card-icon">🎈</div>
+          <div><div class="card-title">Mongolfiere</div></div>
+        </div>
+        <div class="card-desc">Aerostati non motorizzati ad aria calda. Seguono il vento; quota controllata variando la temperatura interna.</div>
+        <span class="card-arrow">→</span>
+      </div>
+
+      <div class="card" data-color="teal" data-modal="dirigibili">
+        <div class="card-header">
+          <div class="card-icon">🛸</div>
+          <div><div class="card-title">Dirigibili</div></div>
+        </div>
+        <div class="card-desc">Aerostati motorizzati con timoni e superfici di controllo. Gas leggeri (He, H₂) in involucri rigidi o semi-rigidi.</div>
+        <span class="card-arrow">→</span>
+      </div>
+
+      <div class="card" data-color="gold" data-modal="rozier">
+        <div class="card-header">
+          <div class="card-icon">🔬</div>
+          <div><div class="card-title">Pallone Rozier — L'Ibrido</div></div>
+        </div>
+        <div class="card-desc">Camera a gas (elio) + camera ad aria calda in un unico velivolo. Massima autonomia per traversate oceaniche.</div>
+        <span class="card-arrow">→</span>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="split-divider"></div>
+
+  <!-- RIGHT: AERODINE -->
+  <div class="split-col">
+    <div class="col-title" style="color: var(--accent-orange)">AERODINE</div>
+    <div class="col-subtitle">Sostentazione Dinamica</div>
+    <div class="col-principle">Legge di <strong>Newton (F = m·a)</strong> — Deviazione delle masse d'aria verso il basso</div>
+    <div class="card-grid">
+
+      <div class="card" data-color="orange" data-modal="portanza">
+        <div class="card-header">
+          <div class="card-icon">✈️</div>
+          <div><div class="card-title">Principio di Portanza</div></div>
+        </div>
+        <div class="card-desc">Bernoulli + Newton: gradiente di pressione intorno al profilo alare, forze aerodinamiche e coefficienti C_L, C_D.</div>
+        <span class="card-arrow">→</span>
+      </div>
+
+      <div class="card" data-color="orange" data-modal="alifisse">
+        <div class="card-header">
+          <div class="card-icon">🛩️</div>
+          <div><div class="card-title">Ali Fisse (Fixed-Wing)</div></div>
+        </div>
+        <div class="card-desc">Velatura fissa, portanza generata dal moto traslazionale. Aerei, alianti, deltaplani a motore.</div>
+        <span class="card-arrow">→</span>
+      </div>
+
+      <div class="card" data-color="orange" data-modal="alirotanti">
+        <div class="card-header">
+          <div class="card-icon">🚁</div>
+          <div><div class="card-title">Ali Rotanti (Rotary-Wing)</div></div>
+        </div>
+        <div class="card-desc">Elicotteri e autogiri. Il rotore genera portanza ruotando. Analisi della blade element theory (BET).</div>
+        <span class="card-arrow">→</span>
+      </div>
+
+      <div class="card" data-color="green" data-modal="vtol">
+        <div class="card-header">
+          <div class="card-icon">🛫</div>
+          <div><div class="card-title">VTOL (x ≤ 500 ft)</div></div>
+        </div>
+        <div class="card-desc">Velivoli a decollo e atterraggio verticale o in spazi &lt; 150 m. Convertiplani, eVTOL, UAM.</div>
+        <span class="card-arrow">→</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- SUMMARY TABLE -->
+<div class="table-section">
+  <div class="section-title">Quadro Sinottico di Classificazione</div>
+  <table class="summary-table">
+    <thead>
+      <tr>
+        <th>Categoria</th>
+        <th>Organo Sostentatore</th>
+        <th>Principio Fisico</th>
+        <th>Con Motore</th>
+        <th>Senza Motore</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge badge-aero">Aerostati</span></td>
+        <td>Involucri con gas</td>
+        <td>Spinta di Archimede</td>
+        <td>Dirigibile</td>
+        <td>Mongolfiera / Pallone</td>
+      </tr>
+      <tr>
+        <td rowspan="2"><span class="badge badge-dyn">Aerodine</span></td>
+        <td>Velatura Fissa</td>
+        <td>Portanza aerodinamica</td>
+        <td>Aeroplano</td>
+        <td>Aliante / Cervo Volante</td>
+      </tr>
+      <tr>
+        <td>Ala Rotante</td>
+        <td>Blade element theory</td>
+        <td>Elicottero</td>
+        <td>Autogiro (in folle)</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ================================================================ MODAL ================================================================ -->
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true">
+  <div class="modal" id="modalBox">
+    <div class="modal-top">
+      <div class="modal-top-left">
+        <div class="modal-tag" id="modalTag"></div>
+        <div class="modal-title" id="modalTitle"></div>
+      </div>
+      <button class="modal-close" id="modalClose" aria-label="Chiudi">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ---- MODAL CONTENT DATA ----
+const modals = {
+
+archimede: {
+  tag: "🔬 Fondamento Fisico · Aerostati",
+  color: "#2ecad4",
+  title: "Principio di Archimede applicato al volo",
+  body: `
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#2ecad4">Enunciato e Definizione</div>
+      <p class="modal-text">
+        Il <strong>Principio di Archimede</strong> afferma che un corpo immerso in un fluido subisce
+        una forza verticale verso l'alto — la <em>spinta idrostatica</em> — uguale in modulo al peso
+        del fluido spostato dal corpo stesso. Per un aerostato, il "fluido" è l'aria atmosferica.
+      </p>
+      <div class="formula-box">
+        <div class="formula-main">F<sub>A</sub> = ρ<sub>aria</sub> · g · V</div>
+        <div class="formula-vars">
+          F<sub>A</sub> = spinta aerostatica [N]<br>
+          ρ<sub>aria</sub> = densità dell'aria ≈ 1.225 kg/m³ @ ISA s.l.<br>
+          g = accelerazione di gravità = 9.81 m/s²<br>
+          V = volume dell'involucro [m³]
+        </div>
+      </div>
+      <p class="modal-text">
+        La <strong>Forza Netta di Galleggiamento</strong> (Net Buoyancy) è:
+      </p>
+      <div class="formula-box">
+        <div class="formula-main">F<sub>netta</sub> = (ρ<sub>aria</sub> − ρ<sub>gas</sub>) · g · V − W<sub>str</sub></div>
+        <div class="formula-vars">
+          ρ<sub>gas</sub> = densità del gas interno [kg/m³]<br>
+          W<sub>str</sub> = peso struttura + payload [N]
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#2ecad4">Diagramma delle Forze</div>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 520 280" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans, sans-serif">
+          <!-- balloon outline -->
+          <ellipse cx="260" cy="120" rx="90" ry="105" fill="rgba(46,202,212,0.1)" stroke="#2ecad4" stroke-width="2" stroke-dasharray="6,4"/>
+          <!-- arrows -->
+          <!-- Spinta su -->
+          <line x1="260" y1="220" x2="260" y2="60" stroke="#2ecad4" stroke-width="3" marker-end="url(#arrUp)"/>
+          <!-- Peso giù -->
+          <line x1="260" y1="60" x2="260" y2="220" stroke="#f4703b" stroke-width="3" marker-end="url(#arrDn)" opacity="0.7" transform="translate(30,0)"/>
+          <!-- labels -->
+          <text x="140" y="140" fill="#2ecad4" font-size="13" font-weight="600">F_A = ρ·g·V</text>
+          <text x="300" y="140" fill="#f4703b" font-size="13" font-weight="600">W = mg</text>
+          <text x="215" y="14" fill="#f0f4ff" font-size="11" opacity="0.7">F_A &gt; W → sale</text>
+          <text x="215" y="270" fill="#f0f4ff" font-size="11" opacity="0.7">F_A = W → quota</text>
+          <!-- gas label -->
+          <text x="230" y="115" fill="#2ecad4" font-size="12" opacity="0.8">ρ_gas &lt; ρ_aria</text>
+          <!-- defs -->
+          <defs>
+            <marker id="arrUp" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+              <polygon points="4,0 8,8 0,8" fill="#2ecad4"/>
+            </marker>
+            <marker id="arrDn" markerWidth="8" markerHeight="8" refX="4" refY="0" orient="auto">
+              <polygon points="4,8 8,0 0,0" fill="#f4703b"/>
+            </marker>
+          </defs>
+        </svg>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#2ecad4">Esempio Pratico — Dirigibile Zeppelin NT</div>
+      <div class="example-box">
+        <strong>Applicazione Aeronautica</strong>
+        <p>Il Zeppelin NT ha un volume di 8.225 m³ riempito con elio (ρ<sub>He</sub> ≈ 0.164 kg/m³).
+        <br>Spinta: F<sub>A</sub> = 1.225 × 9.81 × 8225 ≈ <strong>98.8 kN</strong>
+        <br>Peso gas: W<sub>He</sub> = 0.164 × 9.81 × 8225 ≈ <strong>13.2 kN</strong>
+        <br>Portanza netta disponibile ≈ 85.6 kN → ~8.7 tonnellate utili per struttura + payload.</p>
+      </div>
+    </div>
+  `
+},
+
+mongolfiere: {
+  tag: "🎈 Aerostati Non Motorizzati",
+  color: "#2ecad4",
+  title: "Mongolfiere — Aerostazione ad Aria Calda",
+  body: `
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#2ecad4">Principio Fisico</div>
+      <p class="modal-text">
+        Nelle mongolfiere l'involucro è aperto verso il basso. Un bruciatore scalda l'aria interna riducendone la densità
+        (legge dei gas ideali: ρ = pM/RT). La differenza di densità tra aria interna calda e aria esterna fredda genera la spinta.
+      </p>
+      <div class="formula-box">
+        <div class="formula-main">ρ<sub>calda</sub> = p · M<sub>aria</sub> / (R · T<sub>int</sub>)</div>
+        <div class="formula-vars">
+          T<sub>int</sub> tipico ≈ 370–420 K (97–147 °C)<br>
+          T<sub>ext</sub> ≈ 288 K (15 °C @ ISA s.l.)<br>
+          R = 8.314 J/(mol·K) ; M<sub>aria</sub> = 0.02897 kg/mol<br>
+          Δρ = ρ<sub>ext</sub> − ρ<sub>int</sub> ≈ 0.22 kg/m³ (tipico)
+        </div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#2ecad4">Controllo della Quota</div>
+      <div class="info-grid">
+        <div class="info-cell"><div class="label">Salita</div><div class="value">Aumento bruciatore → T↑ → ρ↓ → F_A↑</div></div>
+        <div class="info-cell"><div class="label">Discesa</div><div class="value">Apertura paracadute superiore → aria fredda → ρ↑</div></div>
+        <div class="info-cell"><div class="label">Direzione</div><div class="value">Solo verticale! Quote diverse = venti diversi</div></div>
+        <div class="info-cell"><div class="label">Carburante</div><div class="value">Propano liquido (bruciatori da 7–20 MW)</div></div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#2ecad4">Diagramma Termico</div>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg">
+          <!-- balloon shape -->
+          <ellipse cx="170" cy="100" rx="80" ry="90" fill="rgba(240,192,64,0.12)" stroke="#f0c040" stroke-width="1.5"/>
+          <!-- inner hot zone -->
+          <ellipse cx="170" cy="110" rx="55" ry="60" fill="rgba(244,112,59,0.12)" stroke="#f4703b" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="145" y="110" fill="#f4703b" font-size="11">T_int ≈ 400K</text>
+          <!-- outer cold air -->
+          <text x="15" y="60" fill="#2ecad4" font-size="11">T_ext ≈ 288K</text>
+          <text x="15" y="78" fill="#2ecad4" font-size="11">ρ_ext ≈ 1.225</text>
+          <!-- burner flame -->
+          <polygon points="155,185 170,165 185,185 178,178 182,195 170,182 158,195 162,178" fill="#f4703b" opacity="0.8"/>
+          <text x="140" y="215" fill="#f0c040" font-size="11">Bruciatore</text>
+          <!-- arrows hot air rises -->
+          <line x1="170" y1="160" x2="170" y2="80" stroke="#f4703b" stroke-width="2" marker-end="url(#aUp2)" stroke-dasharray="5,3"/>
+          <defs>
+            <marker id="aUp2" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+              <polygon points="4,0 8,8 0,8" fill="#f4703b"/>
+            </marker>
+          </defs>
+          <!-- Delta rho label -->
+          <text x="290" y="80" fill="#f0f4ff" font-size="13" font-weight="600">Δρ = ρ_ext − ρ_int</text>
+          <text x="290" y="100" fill="#f0f4ff" font-size="13" font-weight="600">F_A = Δρ · g · V</text>
+          <line x1="260" y1="90" x2="290" y2="90" stroke="#f0f4ff" stroke-width="1" stroke-dasharray="3,3"/>
+        </svg>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#2ecad4">Esempio Pratico</div>
+      <div class="example-box">
+        <strong>Calcolo dimensionamento</strong>
+        <p>Mongolfiera con payload totale di 600 kg. Δρ = 0.22 kg/m³.<br>
+        Volume minimo: V = W / (Δρ · g) = (600 × 9.81) / (0.22 × 9.81) = <strong>2727 m³</strong><br>
+        Con raggio sferico equivalente: r = (3V/4π)^(1/3) ≈ <strong>8.7 m</strong> di diametro.</p>
+      </div>
+    </div>
+  `
+},
+
+dirigibili: {
+  tag: "🛸 Aerostati Motorizzati",
+  color: "#2ecad4",
+  title: "Dirigibili — Navigabilità e Struttura",
+  body: `
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#2ecad4">Classificazione Strutturale</div>
+      <div class="info-grid">
+        <div class="info-cell"><div class="label">Molle (Blimps)</div><div class="value">Involucro flessibile; pressione interna mantiene forma. Es. Goodyear Blimp.</div></div>
+        <div class="info-cell"><div class="label">Semi-rigidi</div><div class="value">Chiglia interna rigida + involucro flessibile. Es. dirigibili militari WW1.</div></div>
+        <div class="info-cell"><div class="label">Rigidi (Zeppelin)</div><div class="value">Struttura metallica interna + celle separate di gas. Lmax &gt; 200 m.</div></div>
+        <div class="info-cell"><div class="label">Ibridi</div><div class="value">Parte portanza aerostatica, parte aerodinamica (spesso a forma di ali).</div></div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#2ecad4">Gas Portanti — Confronto</div>
+      <div class="formula-box">
+        <div class="formula-vars">
+          Idrogeno H₂: ρ = 0.0899 kg/m³ → Δρ_max ≈ 1.135 kg/m³ (infiammabile!)<br>
+          Elio He: ρ = 0.164 kg/m³ → Δρ ≈ 1.061 kg/m³ (inerte, sicuro)<br>
+          Aria calda: Δρ ≈ 0.20–0.28 kg/m³ (necessita bruciatore continuo)<br>
+          <br>
+          Efficienza He/H₂ ≈ 93% — margine di sicurezza netto contro infiammabilità
+        </div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#2ecad4">Stabilità e Controllo</div>
+      <p class="modal-text">
+        La stabilità longitudinale è governata dalla posizione relativa del <strong>Centro di Carena</strong> (B) rispetto al
+        <strong>Centro di Gravità</strong> (G). Perché il dirigibile sia stabile in beccheggio: B deve essere al di sopra di G.
+        Le superfici di coda (piani orizzontali e verticali) forniscono smorzamento aerodinamico.
+      </p>
+      <div class="formula-box">
+        <div class="formula-main">M<sub>ristore</sub> = (F_A − W) · BG · sin θ</div>
+        <div class="formula-vars">BG = distanza verticale B→G [m] ; θ = angolo di sbandamento</div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#2ecad4">Esempio Pratico — Zeppelin LZ 129 Hindenburg</div>
+      <div class="example-box">
+        <strong>Dati costruttivi storici</strong>
+        <p>Lunghezza 245 m, diametro max 41 m, 16 celle H₂ per 200.000 m³ totali.<br>
+        Portanza lorda: 1.225 × 9.81 × 200000 ≈ 2.404 MN (~245 t).<br>
+        Peso struttura 130 t → Carico utile massimo ≈ 115 t (passeggeri + carburante + zavorra).<br>
+        4 motori Diesel da 890 kW ciascuno → V<sub>crociera</sub> ≈ 125 km/h.</p>
+      </div>
+    </div>
+  `
+},
+
+rozier: {
+  tag: "🔬 Aerostato Ibrido",
+  color: "#f0c040",
+  title: "Pallone Rozier — Il Velivolo Ibrido",
+  body: `
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#f0c040">Architettura del Sistema</div>
+      <p class="modal-text">
+        Il pallone Rozier combina due tecnologie: una <strong>camera superiore a gas nobile</strong> (elio o idrogeno)
+        che fornisce portanza base costante, e una <strong>camera inferiore ad aria calda</strong> che consente
+        la regolazione fine della quota tramite il bruciatore. Prende il nome da Jean-François Pilâtre de Rozier
+        (1754–1785), primo uomo a volare in mongolfiera.
+      </p>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#f0c040">Vantaggi Operativi</div>
+      <div class="info-grid">
+        <div class="info-cell"><div class="label">Autonomia</div><div class="value">Fino a 2–3 settimane (trasvolate oceaniche e circumnavigazioni)</div></div>
+        <div class="info-cell"><div class="label">Efficienza</div><div class="value">Minor consumo propano rispetto a pura mongolfiera (He porta già il 70–80% del peso)</div></div>
+        <div class="info-cell"><div class="label">Controllo quota</div><div class="value">Bruciatore regola la camera aria calda; valvole di sfogo regolano He</div></div>
+        <div class="info-cell"><div class="label">Record</div><div class="value">Breitling Orbiter 3 (1999): prima circumnavigazione globale senza scalo, 19 giorni</div></div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#f0c040">Schema Energetico</div>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 500 260" xmlns="http://www.w3.org/2000/svg">
+          <!-- He chamber -->
+          <ellipse cx="250" cy="90" rx="100" ry="70" fill="rgba(46,202,212,0.1)" stroke="#2ecad4" stroke-width="2"/>
+          <text x="210" y="85" fill="#2ecad4" font-size="12" font-weight="600">Camera He</text>
+          <text x="210" y="103" fill="#2ecad4" font-size="11">Portanza fissa</text>
+          <!-- hot air chamber -->
+          <ellipse cx="250" cy="190" rx="70" ry="45" fill="rgba(244,112,59,0.12)" stroke="#f4703b" stroke-width="2"/>
+          <text x="215" y="188" fill="#f4703b" font-size="12" font-weight="600">Camera Aria</text>
+          <text x="222" y="205" fill="#f4703b" font-size="11">Portanza variabile</text>
+          <!-- gondola -->
+          <rect x="220" y="240" width="60" height="18" rx="5" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+          <text x="232" y="253" fill="#f0f4ff" font-size="10">Gondola</text>
+          <!-- connecting lines -->
+          <line x1="250" y1="160" x2="250" y2="145" stroke="#f0f4ff" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <line x1="250" y1="235" x2="250" y2="240" stroke="#f0f4ff" stroke-width="1.5"/>
+          <!-- labels -->
+          <text x="370" y="90" fill="#f0c040" font-size="11">F_tot = F_He + F_aria_calda</text>
+          <line x1="350" y1="90" x2="360" y2="90" stroke="#f0c040" stroke-width="1" stroke-dasharray="3,2"/>
+        </svg>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#f0c040">Esempio Pratico</div>
+      <div class="example-box">
+        <strong>Breitling Orbiter 3 — 1999</strong>
+        <p>Volume He: ~18.000 m³ → portanza base ≈ 19.4 t.<br>
+        Volume aria calda: ~2.000 m³ → portanza variabile ±2.2 t.<br>
+        Totale carico utile: ~3.8 t (piloti + carburante propano + strumentazione).<br>
+        Quota crociera: 7.600–11.300 m (uso delle jetstream).</p>
+      </div>
+    </div>
+  `
+},
+
+portanza: {
+  tag: "✈️ Fondamento Fisico · Aerodine",
+  color: "#f4703b",
+  title: "Principio di Portanza Aerodinamica",
+  body: `
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#f4703b">Due Interpretazioni Complementari</div>
+      <p class="modal-text"><strong>1. Teorema di Bernoulli (approccio energetico):</strong> il profilo alare devia il flusso creando una superficie superiore con percorso più lungo → velocità maggiore → pressione inferiore (equazione di Bernoulli: p + ½ρv² = const).</p>
+      <p class="modal-text" style="margin-top:10px"><strong>2. Terza Legge di Newton (approccio quantità di moto):</strong> l'ala devia le masse d'aria verso il basso; per reazione, l'aria spinge l'ala verso l'alto. F = d(mv)/dt = ṁ · Δv_verticale.</p>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#f4703b">Equazione della Portanza</div>
+      <div class="formula-box">
+        <div class="formula-main">L = ½ · ρ · V² · S · C_L</div>
+        <div class="formula-vars">
+          L = Portanza [N]<br>
+          ρ = densità aria [kg/m³] (ISA sl: 1.225)<br>
+          V = velocità relativa [m/s]<br>
+          S = superficie alare [m²]<br>
+          C_L = coefficiente di portanza (dipende da α e profilo)<br><br>
+          Analogamente la resistenza:  D = ½ · ρ · V² · S · C_D
+        </div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#f4703b">Profilo Alare e Angolo di Attacco</div>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 520 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- airfoil shape -->
+          <path d="M 60 120 Q 160 60 340 100 Q 400 115 450 120 Q 390 140 220 140 Q 120 145 60 120 Z"
+                fill="rgba(244,112,59,0.15)" stroke="#f4703b" stroke-width="2"/>
+          <!-- chord line -->
+          <line x1="60" y1="120" x2="450" y2="120" stroke="rgba(255,255,255,0.2)" stroke-width="1" stroke-dasharray="6,4"/>
+          <!-- AoA angle arc -->
+          <path d="M 100 120 A 40 40 0 0 1 108 96" stroke="#f0c040" stroke-width="2" fill="none"/>
+          <text x="112" y="103" fill="#f0c040" font-size="11">α</text>
+          <!-- flow lines upper -->
+          <path d="M 20 85 Q 200 50 470 90" stroke="#2ecad4" stroke-width="1.5" fill="none" stroke-dasharray="4,3" opacity="0.8"/>
+          <path d="M 20 75 Q 200 38 470 78" stroke="#2ecad4" stroke-width="1" fill="none" stroke-dasharray="4,3" opacity="0.5"/>
+          <text x="20" y="70" fill="#2ecad4" font-size="10">v↑ p↓</text>
+          <!-- flow lines lower -->
+          <path d="M 20 145 Q 240 160 470 148" stroke="#f0c040" stroke-width="1.5" fill="none" stroke-dasharray="4,3" opacity="0.8"/>
+          <text x="20" y="172" fill="#f0c040" font-size="10">v↓ p↑</text>
+          <!-- Lift arrow -->
+          <line x1="260" y1="120" x2="260" y2="40" stroke="#3dd68c" stroke-width="3" marker-end="url(#aL)"/>
+          <text x="268" y="60" fill="#3dd68c" font-size="12" font-weight="600">L (Portanza)</text>
+          <!-- Drag arrow -->
+          <line x1="370" y1="110" x2="430" y2="110" stroke="#f4703b" stroke-width="2.5" marker-end="url(#aD)"/>
+          <text x="433" y="113" fill="#f4703b" font-size="11">D</text>
+          <defs>
+            <marker id="aL" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+              <polygon points="4,0 8,8 0,8" fill="#3dd68c"/>
+            </marker>
+            <marker id="aD" markerWidth="8" markerHeight="8" refX="0" refY="4" orient="auto">
+              <polygon points="0,0 8,4 0,8" fill="#f4703b"/>
+            </marker>
+          </defs>
+        </svg>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#f4703b">Esempio Pratico — Boeing 737-800</div>
+      <div class="example-box">
+        <strong>Verifica portanza al decollo</strong>
+        <p>MTOW ≈ 79.000 kg → L = 79.000 × 9.81 ≈ 775 kN<br>
+        S = 125 m², ρ = 1.225 kg/m³, C_L = 2.2 (flap estesi)<br>
+        V<sub>rot</sub> = √(2L / (ρ·S·C_L)) = √(2×775000 / (1.225×125×2.2)) ≈ <strong>68 m/s (244 km/h)</strong></p>
+      </div>
+    </div>
+  `
+},
+
+alifisse: {
+  tag: "🛩️ Aerodine — Velatura Fissa",
+  color: "#f4703b",
+  title: "Aeromobili ad Ala Fissa",
+  body: `
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#f4703b">Classificazione per Configurazione Alare</div>
+      <div class="info-grid">
+        <div class="info-cell"><div class="label">Monoplano basso</div><div class="value">Ala sotto la fusoliera (maggioranza aerei commerciali). C_G stabile.</div></div>
+        <div class="info-cell"><div class="label">Monoplano alto</div><div class="value">Ala sopra la fusoliera. Utile per velivoli da carico o bassa velocità.</div></div>
+        <div class="info-cell"><div class="label">Delta</div><div class="value">Alta freccia, grandi numeri di Mach. Eurofighter Typhoon, Concorde.</div></div>
+        <div class="info-cell"><div class="label">Biplanare</div><div class="value">Due ali sovrapposte. Alta portanza a basse velocità (aerobatic, agricoli).</div></div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#f4703b">Efficienza Aerodinamica — Rapporto E</div>
+      <div class="formula-box">
+        <div class="formula-main">E = L/D = C_L / C_D</div>
+        <div class="formula-vars">
+          Aliante da competizione: E ≈ 50–70 (C_L/C_D massimo)<br>
+          Aereo di linea (crociera): E ≈ 17–20<br>
+          Caccia supersonico: E ≈ 5–8<br>
+          Elicottero: E ≈ 4–6<br><br>
+          Distanza planata senza propulsione = quota × E<br>
+          Es. aliante a 3.000 m, E=60 → planata max ≈ 180 km
+        </div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#f4703b">Le Quattro Forze del Volo</div>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 500 260" xmlns="http://www.w3.org/2000/svg">
+          <!-- airplane silhouette -->
+          <path d="M250,130 L340,120 L360,130 L340,140 Z" fill="rgba(244,112,59,0.2)" stroke="#f4703b" stroke-width="1.5"/>
+          <path d="M260,130 L140,100 L150,130 L140,160 Z" fill="rgba(244,112,59,0.2)" stroke="#f4703b" stroke-width="1.5"/>
+          <ellipse cx="250" cy="130" rx="30" ry="14" fill="rgba(244,112,59,0.25)" stroke="#f4703b" stroke-width="1.5"/>
+          <!-- Lift up -->
+          <line x1="250" y1="116" x2="250" y2="40" stroke="#3dd68c" stroke-width="3" marker-end="url(#aL2)"/>
+          <text x="258" y="55" fill="#3dd68c" font-size="12" font-weight="600">PORTANZA L</text>
+          <!-- Weight down -->
+          <line x1="250" y1="144" x2="250" y2="215" stroke="#2ecad4" stroke-width="3" marker-end="url(#aW)"/>
+          <text x="258" y="205" fill="#2ecad4" font-size="12" font-weight="600">PESO W</text>
+          <!-- Thrust right -->
+          <line x1="280" y1="130" x2="400" y2="130" stroke="#f0c040" stroke-width="3" marker-end="url(#aT)"/>
+          <text x="355" y="120" fill="#f0c040" font-size="12" font-weight="600">SPINTA T</text>
+          <!-- Drag left -->
+          <line x1="220" y1="130" x2="90" y2="130" stroke="#f4703b" stroke-width="3" marker-end="url(#aDr)"/>
+          <text x="88" y="120" fill="#f4703b" font-size="12" font-weight="600">RES. D</text>
+          <defs>
+            <marker id="aL2" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><polygon points="4,0 8,8 0,8" fill="#3dd68c"/></marker>
+            <marker id="aW"  markerWidth="8" markerHeight="8" refX="4" refY="0" orient="auto"><polygon points="4,8 8,0 0,0" fill="#2ecad4"/></marker>
+            <marker id="aT"  markerWidth="8" markerHeight="8" refX="0" refY="4" orient="auto"><polygon points="0,0 8,4 0,8" fill="#f0c040"/></marker>
+            <marker id="aDr" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><polygon points="8,0 0,4 8,8" fill="#f4703b"/></marker>
+          </defs>
+          <text x="150" y="250" fill="#f0f4ff" font-size="10" opacity="0.6">Volo rettilineo uniforme: L=W, T=D</text>
+        </svg>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#f4703b">Esempio Pratico — Progetto Ala di un UAV</div>
+      <div class="example-box">
+        <strong>Dimensionamento alare (UAV da 25 kg)</strong>
+        <p>MTOW = 25 kg → L_req = 245 N. V_crociera = 30 m/s, ρ = 1.2 kg/m³, C_L = 1.0<br>
+        S = 2L/(ρ·V²·C_L) = 490/(1.2×900×1.0) = <strong>0.45 m²</strong><br>
+        Aspect Ratio scelto AR = 8 → b = √(AR·S) = √3.6 ≈ <strong>1.9 m</strong> di apertura alare.</p>
+      </div>
+    </div>
+  `
+},
+
+alirotanti: {
+  tag: "🚁 Aerodine — Ala Rotante",
+  color: "#f4703b",
+  title: "Ali Rotanti — Elicotteri & Autogiri",
+  body: `
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#f4703b">Blade Element Theory (BET)</div>
+      <p class="modal-text">
+        Ogni sezione della pala viene analizzata come un piccolo profilo alare 2D in moto. La velocità relativa
+        all'elemento è la somma vettoriale della velocità tangenziale (Ωr) e della velocità indotta (v_i).
+      </p>
+      <div class="formula-box">
+        <div class="formula-main">dL = ½ · ρ · U² · c · C_L · dr</div>
+        <div class="formula-vars">
+          U = velocità relativa all'elemento = √[(Ωr)² + v_i²]<br>
+          c = corda locale della pala [m]<br>
+          r = raggio radiale dell'elemento [m]<br>
+          Ω = velocità angolare del rotore [rad/s]<br><br>
+          Portanza totale: T = N_pale · ∫₀^R dL(r) dr
+        </div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#f4703b">Elicottero vs Autogiro</div>
+      <div class="info-grid">
+        <div class="info-cell"><div class="label">Elicottero</div><div class="value">Rotore motorizzato → portanza + spinta. Volo stazionario (hover) possibile. Coda anti-coppia.</div></div>
+        <div class="info-cell"><div class="label">Autogiro</div><div class="value">Rotore in autorotazione libera (vento relativo). Propulsore separato. Non può fare hover puro.</div></div>
+        <div class="info-cell"><div class="label">Coppia reattiva</div><div class="value">Rotore principale → coppia su fusoliera. Contrasto: rotore di coda, rotore coassiale, NOTAR.</div></div>
+        <div class="info-cell"><div class="label">Hover efficiency</div><div class="value">Figure of Merit FM = T·v_i / P_ideale (ottimo ≈ 0.75–0.80 per pale moderne)</div></div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#f4703b">Schema Forze Rotore</div>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg">
+          <!-- rotor disk -->
+          <ellipse cx="250" cy="80" rx="140" ry="30" fill="rgba(244,112,59,0.08)" stroke="#f4703b" stroke-width="1.5" stroke-dasharray="6,4"/>
+          <!-- blades -->
+          <line x1="110" y1="80" x2="390" y2="80" stroke="#f4703b" stroke-width="3" stroke-linecap="round"/>
+          <line x1="250" y1="50" x2="250" y2="110" stroke="#f4703b" stroke-width="3" stroke-linecap="round"/>
+          <!-- hub -->
+          <circle cx="250" cy="80" r="10" fill="rgba(244,112,59,0.4)" stroke="#f4703b" stroke-width="2"/>
+          <!-- Thrust up -->
+          <line x1="250" y1="70" x2="250" y2="10" stroke="#3dd68c" stroke-width="3" marker-end="url(#aTh)"/>
+          <text x="258" y="28" fill="#3dd68c" font-size="12" font-weight="600">Thrust T</text>
+          <!-- Weight down -->
+          <line x1="250" y1="110" x2="250" y2="185" stroke="#2ecad4" stroke-width="2.5" marker-end="url(#aWh)"/>
+          <text x="258" y="175" fill="#2ecad4" font-size="11">Peso W</text>
+          <!-- rotation arrow -->
+          <path d="M 310 60 A 60 20 0 0 1 190 60" stroke="#f0c040" stroke-width="2" fill="none" marker-end="url(#aRot)" stroke-dasharray="5,3"/>
+          <text x="195" y="50" fill="#f0c040" font-size="10">Ω (rotazione)</text>
+          <!-- induced velocity -->
+          <line x1="200" y1="100" x2="200" y2="155" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#aVi)"/>
+          <text x="148" y="140" fill="rgba(255,255,255,0.5)" font-size="10">v_i indotta</text>
+          <defs>
+            <marker id="aTh"  markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><polygon points="4,0 8,8 0,8" fill="#3dd68c"/></marker>
+            <marker id="aWh"  markerWidth="8" markerHeight="8" refX="4" refY="0" orient="auto"><polygon points="4,8 8,0 0,0" fill="#2ecad4"/></marker>
+            <marker id="aRot" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><polygon points="4,0 8,8 0,8" fill="#f0c040"/></marker>
+            <marker id="aVi"  markerWidth="8" markerHeight="8" refX="4" refY="0" orient="auto"><polygon points="4,8 8,0 0,0" fill="rgba(255,255,255,0.4)"/></marker>
+          </defs>
+          <!-- helicopter body sketch -->
+          <ellipse cx="250" cy="195" rx="45" ry="18" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+          <text x="228" y="200" fill="rgba(255,255,255,0.5)" font-size="10">Fusoliera</text>
+        </svg>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#f4703b">Esempio Pratico — AW139</div>
+      <div class="example-box">
+        <strong>Potenza richiesta in hover</strong>
+        <p>MTOW = 6800 kg → T = 66.7 kN. D<sub>rotore</sub> = 13.8 m → A = π×6.9² ≈ 149.6 m².<br>
+        Velocità indotta: v_i = √(T/(2ρA)) = √(66700/(2×1.225×149.6)) ≈ <strong>13.5 m/s</strong><br>
+        Potenza ideale: P = T × v_i = 66700 × 13.5 ≈ <strong>900 kW</strong> (FM ≈ 0.75 → P_reale ≈ 1.2 MW)</p>
+      </div>
+    </div>
+  `
+},
+
+vtol: {
+  tag: "🛫 Aerodine — Classe Speciale",
+  color: "#3dd68c",
+  title: "VTOL — Velivoli a Decollo Verticale",
+  body: `
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#3dd68c">Definizione Normativa</div>
+      <p class="modal-text">
+        Un VTOL (Vertical Take-Off and Landing) è un aeromobile capace di decollare e atterrare verticalmente,
+        o in uno spazio orizzontale inferiore a <strong>150 m (≈ 500 ft)</strong>. La sigla STOL (Short Take-Off and Landing)
+        si applica quando lo spazio richiesto è ridotto ma non nullo.
+      </p>
+      <div class="info-grid">
+        <div class="info-cell"><div class="label">Elicotteri</div><div class="value">VTOL naturale per definizione strutturale. Il caso base.</div></div>
+        <div class="info-cell"><div class="label">Convertiplani</div><div class="value">V-22 Osprey: rotori basculanti, decollo elicottero + volo aereo.</div></div>
+        <div class="info-cell"><div class="label">eVTOL</div><div class="value">Multirotori elettrici per Urban Air Mobility. Joby, Archer, Lilium.</div></div>
+        <div class="info-cell"><div class="label">Jet VTOL</div><div class="value">AV-8B Harrier, F-35B: ugello vettoriale o propulsori separati hover.</div></div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#3dd68c">Efficienza Energetica — Disk Loading</div>
+      <div class="formula-box">
+        <div class="formula-main">DL = T / A_disco [N/m²]</div>
+        <div class="formula-vars">
+          Basso DL → bassa v_i → alta efficienza energetica (elicotteri grandi)<br>
+          Alto DL → alta v_i → alta spinta/area (jet lift, eVTOL compact)<br><br>
+          P_hover ∝ DL^(1/2) · T^(3/2)<br>
+          Incrementare DL per fattore 4 → raddoppia la potenza necessaria
+        </div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#3dd68c">Transizione Hovering → Volo Orizzontale</div>
+      <div class="svg-wrap">
+        <svg viewBox="0 0 520 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- Power curve -->
+          <polyline points="40,160 120,100 200,80 300,75 400,85 480,110"
+                    stroke="#3dd68c" stroke-width="2.5" fill="none"/>
+          <!-- Hover region -->
+          <rect x="40" y="70" width="100" height="100" fill="rgba(46,202,212,0.05)" stroke="rgba(46,202,212,0.2)" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="48" y="65" fill="#2ecad4" font-size="10">Hover</text>
+          <!-- Transition region -->
+          <rect x="140" y="70" width="120" height="100" fill="rgba(240,192,64,0.05)" stroke="rgba(240,192,64,0.2)" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="155" y="65" fill="#f0c040" font-size="10">Transizione</text>
+          <!-- Cruise region -->
+          <rect x="260" y="70" width="220" height="100" fill="rgba(61,214,140,0.05)" stroke="rgba(61,214,140,0.2)" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="340" y="65" fill="#3dd68c" font-size="10">Crociera</text>
+          <!-- VRS dip -->
+          <text x="75" y="185" fill="#f4703b" font-size="9">Vortex Ring State →</text>
+          <!-- axes -->
+          <line x1="40" y1="170" x2="490" y2="170" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" marker-end="url(#aXv)"/>
+          <line x1="40" y1="170" x2="40" y2="30" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" marker-end="url(#aYv)"/>
+          <text x="480" y="185" fill="rgba(255,255,255,0.5)" font-size="10">V →</text>
+          <text x="44" y="28" fill="rgba(255,255,255,0.5)" font-size="10">P ↑</text>
+          <defs>
+            <marker id="aXv" markerWidth="6" markerHeight="6" refX="0" refY="3" orient="auto"><polygon points="0,0 6,3 0,6" fill="rgba(255,255,255,0.3)"/></marker>
+            <marker id="aYv" markerWidth="6" markerHeight="6" refX="3" refY="6" orient="auto"><polygon points="0,6 6,6 3,0" fill="rgba(255,255,255,0.3)"/></marker>
+          </defs>
+        </svg>
+      </div>
+      <p class="modal-text" style="font-size:0.82rem; margin-top:8px; color: var(--text-muted);">
+        Curva della potenza vs velocità di avanzamento. Il minimo si trova alla velocità di massima efficienza; l'hover richiede più potenza del volo in traslazione a bassa velocità.
+      </p>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title" style="color:#3dd68c">Esempio Pratico — eVTOL Joby S4</div>
+      <div class="example-box">
+        <strong>Dimensionamento elettrico per hover</strong>
+        <p>MTOW ≈ 2177 kg → T = 21.3 kN, 6 rotori inclinabili.<br>
+        Disk Loading totale ≈ 140 N/m² → v_i ≈ 7.5 m/s<br>
+        P_hover ≈ T × v_i / FM ≈ 21300 × 7.5 / 0.72 ≈ <strong>222 kW</strong><br>
+        Batteria 254 kWh → autonomia stimata ≈ 150 km in crociera a 320 km/h.</p>
+      </div>
+    </div>
+  `
+}
+
+}; // end modals
+
+// ---- SCROLL REVEAL ----
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.card, .table-section').forEach(el => observer.observe(el));
+
+// stagger card animations
+document.querySelectorAll('.card').forEach((card, i) => {
+  card.style.transitionDelay = `${i * 0.07}s`;
+});
+
+// ---- MODAL LOGIC ----
+const overlay = document.getElementById('modalOverlay');
+const modalTag = document.getElementById('modalTag');
+const modalTitle = document.getElementById('modalTitle');
+const modalBody = document.getElementById('modalBody');
+const modalClose = document.getElementById('modalClose');
+const modalBox = document.getElementById('modalBox');
+
+function openModal(id) {
+  const data = modals[id];
+  if(!data) return;
+  modalTag.textContent = data.tag;
+  modalTag.style.color = data.color;
+  modalTitle.textContent = data.title;
+  modalTitle.style.color = data.color;
+  modalBody.innerHTML = data.body;
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  modalBox.scrollTop = 0;
+}
+
+function closeModal() {
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.querySelectorAll('.card').forEach(card => {
+  card.addEventListener('click', () => openModal(card.dataset.modal));
+  card.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' ') openModal(card.dataset.modal); });
+  card.setAttribute('tabindex', '0');
+  card.setAttribute('role', 'button');
+});
+
+modalClose.addEventListener('click', closeModal);
+overlay.addEventListener('click', e => { if(e.target === overlay) closeModal(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>
